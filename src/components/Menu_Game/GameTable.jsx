@@ -1,14 +1,11 @@
 import {
-  Button,
   Image,
   Space,
   Table,
   Form,
   Input,
-  InputNumber,
   Popconfirm,
   Typography,
-  Upload,
   Tag,
   Select,
 } from "antd";
@@ -69,6 +66,8 @@ export default function GameTable() {
         const { code, data, msg } = res.data;
         if (code === 0) {
           setGameData(data.data);
+        } else {
+          console.log("error", msg);
         }
       } catch (e) {
         console.log("error", e);
@@ -265,27 +264,30 @@ export default function GameTable() {
       dataIndex: "iconUrl",
       key: "iconUrl",
       editable: false,
-      render: (_, { id, iconUrl }) => (
-        <Image src={getImageUrl(id, iconUrl)} style={{ width: "100px" }} /> // Render preview if not in edit mode
-      ),
+      render: (_, { id, iconUrl }) =>
+        iconUrl == "" ? null : (
+          <Image src={getImageUrl(id, iconUrl)} style={{ width: "100px" }} />
+        ), // Render preview if not in edit mode
     },
     {
       title: "Logo URL",
       dataIndex: "logoUrl",
       key: "logoUrl",
       editable: false,
-      render: (_, { id, logoUrl }) => (
-        <Image src={getImageUrl(id, logoUrl)} style={{ width: "100px" }} /> // Render preview if not in edit mode
-      ),
+      render: (_, { id, logoUrl }) =>
+        logoUrl == "" ? null : (
+          <Image src={getImageUrl(id, logoUrl)} style={{ width: "100px" }} />
+        ), // Render preview if not in edit mode
     },
     {
       title: "Main Image URL",
       dataIndex: "mainImageUrl",
       key: "mainImageUrl",
       editable: false,
-      render: (_, { id, mainImageUrl }) => (
-        <Image src={getImageUrl(id, mainImageUrl)} style={{ width: "100px" }} /> // Render preview if not in edit mode
-      ),
+      render: (_, { id, mainPicUrl }) =>
+        mainPicUrl == "" ? null : (
+          <Image src={getImageUrl(id, mainPicUrl)} style={{ width: "100px" }} />
+        ), // Render preview if not in edit mode
     },
     {
       title: "Action",

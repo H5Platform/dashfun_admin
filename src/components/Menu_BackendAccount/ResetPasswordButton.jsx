@@ -1,10 +1,17 @@
 import { useState } from "react";
-import { Alert, Button, Popconfirm } from "antd";
+import { Button, Popconfirm } from "antd";
 import API, { requestWithAuthHeader } from "../../modules/api";
 import JSEvent from "../../utils/JSEvent";
 import Events from "../../modules/Events";
 
+import PropTypes from "prop-types";
+
 export default function ResetPasswordButton({ record, messageApi }) {
+  ResetPasswordButton.propTypes = {
+    record: PropTypes.object.isRequired,
+    messageApi: PropTypes.object.isRequired,
+  };
+
   const [resetPwdLoading, setResetPwdLoading] = useState(false);
 
   const resetPasswordHandler = async (user_id) => {

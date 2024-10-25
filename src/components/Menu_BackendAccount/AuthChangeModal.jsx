@@ -1,9 +1,10 @@
 import { useState } from "react";
-import { Modal, Button, Form, Checkbox, Row, Col, Alert } from "antd";
+import { Modal, Button, Form, Checkbox, Row, Col } from "antd";
 import API, { requestWithAuthHeader } from "../../modules/api";
 import Constants from "../../modules/constants";
 import JSEvent from "../../utils/JSEvent";
 import Events from "../../modules/Events";
+import PropTypes from "prop-types";
 
 const { Authority } = Constants;
 
@@ -41,6 +42,11 @@ const AuthCheckBoxGroup = () => (
 );
 
 export default function AuthChangeModal({ record, messageApi }) {
+  AuthChangeModal.propTypes = {
+    record: PropTypes.object.isRequired,
+    messageApi: PropTypes.object.isRequired,
+  };
+
   const [form] = Form.useForm();
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);

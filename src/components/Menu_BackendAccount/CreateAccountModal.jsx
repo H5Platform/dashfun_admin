@@ -75,7 +75,7 @@ export default function CreateAccountModal() {
         auth: 1,
       });
       console.log("res", res);
-      const { code, data, msg } = res.data;
+      const { code, msg } = res.data;
       if (code == 0) {
         setFeedback({ type: "success", msg: "User created successfully" });
         form.resetFields();

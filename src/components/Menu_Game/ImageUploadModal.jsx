@@ -15,7 +15,12 @@ const getBase64 = (file) =>
   });
 
 export default function ImageUploadModal({ data, disabled }) {
-  console.log("data", data);
+  ImageUploadModal.propTypes = {
+    data: PropTypes.object.isRequired,
+    disabled: PropTypes.bool,
+  };
+
+  // console.log("data", data);
   const [previewOpen, setPreviewOpen] = useState(false);
   const [previewImage, setPreviewImage] = useState("");
   const [fileList, setFileList] = useState({});

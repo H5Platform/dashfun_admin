@@ -1,5 +1,3 @@
-import AccountTable from "../components/Menu_BackendAccount/AccountTable";
-
 const Events = {
   Account: {
     Login: "Events_Account_Login",

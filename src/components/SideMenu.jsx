@@ -3,6 +3,7 @@ import { Menu, Layout } from "antd";
 import { DesktopOutlined, UserOutlined } from "@ant-design/icons";
 import AccountButton from "./AccountButton";
 import Constants from "../modules/constants";
+import PropTypes from "prop-types";
 
 const { Sider } = Layout;
 
@@ -26,6 +27,10 @@ const items = [
 ];
 
 export default function SideMenu({ onSelectMenu }) {
+  SideMenu.propTypes = {
+    onSelectMenu: PropTypes.func.isRequired,
+  };
+
   const [collapsed, setCollapsed] = useState(false);
 
   return (

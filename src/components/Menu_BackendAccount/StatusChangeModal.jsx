@@ -4,6 +4,7 @@ import API, { requestWithAuthHeader } from "../../modules/api";
 import Constants from "../../modules/constants";
 import JSEvent from "../../utils/JSEvent";
 import Events from "../../modules/Events";
+import PropTypes from "prop-types";
 
 const { UserStatus } = Constants;
 
@@ -29,6 +30,11 @@ const StatusCheckBoxGroup = () => (
 );
 
 export default function StatusChangeModal({ record, messageApi }) {
+  StatusChangeModal.propTypes = {
+    record: PropTypes.object.isRequired,
+    messageApi: PropTypes.object.isRequired,
+  };
+
   const [form] = Form.useForm();
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);

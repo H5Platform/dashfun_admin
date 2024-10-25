@@ -30,11 +30,11 @@ export default function GameFilter() {
     JSEvent.emit(Events.GameTable_Update, filter);
   };
 
-  const onResetFilter = () => {
-    setKeyword("");
-    setGenre([]);
-    setStatus(undefined);
-  };
+  // const onResetFilter = () => {
+  //   setKeyword("");
+  //   setGenre([]);
+  //   setStatus(undefined);
+  // };
 
   return (
     <div className="mb-3">

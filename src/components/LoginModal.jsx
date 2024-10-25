@@ -11,7 +11,6 @@ import {
 } from "../utils/authHandler";
 import JSEvent from "../utils/JSEvent";
 import Events from "../modules/Events";
-import DataCenter from "../modules/DataCenter";
 
 const LoginModal = () => {
   const [modalOpen, setModalOpen] = useState(false);

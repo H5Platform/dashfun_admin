@@ -1,25 +1,55 @@
 import { useState } from "react";
-import { Button, Form, Input, Space } from "antd";
+import { Alert, Button, Form, Input, Space } from "antd";
+import API, { requestWithAuthHeader } from "../modules/api";
+import { setAuthHeader } from "../utils/authHandler";
+import { useNavigate, useParams } from "react-router-dom";
 
 export default function ActivateAccount() {
-  const [email, setEmail] = useState("");
-  const [token, setToken] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [hasActivated, setHasActivated] = useState(false);
+  const [errorMsg, setErrorMsg] = useState("");
 
-  const onActivateAccount = async (values) => {
-    console.log("Activate account", values);
+  const { decodedToken } = useParams();
+  const navigate = useNavigate();
+  console.log("token", decodedToken);
+
+  // try {
+  //   const currentUrl = window.location.href;
+  //   console.log("currentUrl", currentUrl);
+  //   const base64String = currentUrl.split("/activate/")[1];
+  //   const decodedString = atob(base64String);
+  //   const { user_id, token } = JSON.parse(decodedString);
+  //   setAuthHeader(user_id, token);
+  // } catch (e) {
+  //   console.log("Error parsing token", e);
+  // }
+
+  const decodedString = atob(decodedToken);
+  const { user_id, token } = JSON.parse(decodedString);
+  setAuthHeader(user_id, token);
+
+  const onActivateAccount = async ({ password }) => {
+    console.log("Activate account", password);
+    const formData = new FormData();
+    formData.append("new_password", password);
+    setLoading(true);
+    try {
+      const res = await requestWithAuthHeader.post(API.activateUser, formData);
+      const { code, msg } = res.data;
+      if (code === 0) {
+        setHasActivated(true);
+        setTimeout(() => {
+          navigate("/");
+        }, 3000);
+      } else {
+        setErrorMsg("Error activating account ", msg);
+      }
+    } catch (e) {
+      // console.log("Error activating account", e);
+      setErrorMsg("Error activating account ", e);
+    }
+    setLoading(false);
   };
-
-  try {
-    const currentUrl = window.location.href;
-    console.log("currentUrl", currentUrl);
-    const base64String = currentUrl.split("/verify/")[1];
-    const decodedString = atob(base64String);
-    const { email, token } = JSON.parse(decodedString);
-    setEmail(email);
-    setToken(token);
-  } catch (e) {
-    console.log("Error parsing token", e);
-  }
 
   return (
     <div className="flex justify-center p-5 h-screen">
@@ -81,6 +111,19 @@ export default function ActivateAccount() {
           >
             <Input.Password placeholder="Confirm password" />
           </Form.Item>
+          {hasActivated && (
+            <Alert
+              message={
+                "Account activated successfully, the page will redirect after 3 seconds. If not, please click the button below."
+              }
+              type="success"
+              showIcon
+              className="my-3"
+            />
+          )}
+          {errorMsg && (
+            <Alert message={errorMsg} type="error" showIcon className="my-3" />
+          )}
           <Form.Item
             wrapperCol={{
               offset: 8,
@@ -88,10 +131,12 @@ export default function ActivateAccount() {
             }}
           >
             <Space>
-              <Button type="primary" htmlType="submit">
+              <Button type="primary" htmlType="submit" loading={loading}>
                 Activate
               </Button>
-              <Button>Go to login</Button>
+              <Button disabled={!hasActivated} onClick={() => navigate("/")}>
+                Go to login
+              </Button>
             </Space>
           </Form.Item>
         </Form>

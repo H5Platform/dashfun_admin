@@ -42,7 +42,7 @@ export default function GameFilter() {
         placeholder="Search by keyword"
         value={keyword}
         onChange={onChangeKeyword}
-        className="my-3"
+        className="my-3 w-[400px] block"
       />
       {/* <Select
         mode="multiple"
@@ -70,9 +70,9 @@ export default function GameFilter() {
         <Button color="primary" variant="link" onClick={onApplyFilter}>
           Apply Filter
         </Button>
-        <Button color="default" variant="link" onClick={onResetFilter}>
+        {/* <Button color="default" variant="link" onClick={onResetFilter}>
           Clear Filter
-        </Button>
+        </Button> */}
       </Space>
     </div>
   );

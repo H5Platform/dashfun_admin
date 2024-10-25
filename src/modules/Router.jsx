@@ -8,7 +8,7 @@ const Router = createBrowserRouter([
     element: <Home />,
   },
   {
-    path: "/activate",
+    path: "/activate/:decodedToken",
     element: <ActivateAccount />,
   },
 ]);

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Modal, Button, Form, Checkbox, Row, Col } from "antd";
+import { Modal, Button, Form, Checkbox, Row, Col, Alert } from "antd";
 import API, { requestWithAuthHeader } from "../../modules/api";
 import Constants from "../../modules/constants";
 import JSEvent from "../../utils/JSEvent";
@@ -40,7 +40,7 @@ const AuthCheckBoxGroup = () => (
   </Form.Item>
 );
 
-export default function AuthChangeModal({ record }) {
+export default function AuthChangeModal({ record, messageApi }) {
   const [form] = Form.useForm();
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -70,21 +70,23 @@ export default function AuthChangeModal({ record }) {
       console.log("res", code, data, msg);
       if (code == 0) {
         console.log("success");
+        setOpen(false);
+        messageApi.success("Authorities changed successfully");
         JSEvent.emit(Events.AccountTable_Update);
       } else {
         console.log("error", msg);
+        messageApi.error(msg);
       }
     } catch (e) {
       console.log("error", e);
+      messageApi.error("Authorities changed failed");
     }
     setLoading(false);
   };
 
   return (
-    <div>
-      <Button key={1} onClick={handleOpen}>
-        Change Authorities
-      </Button>
+    <>
+      <Button onClick={handleOpen}>Change Authorities</Button>
       <Modal
         title="Change Authorities"
         open={open}
@@ -119,6 +121,6 @@ export default function AuthChangeModal({ record }) {
           </Form.Item>
         </Form>
       </Modal>
-    </div>
+    </>
   );
 }

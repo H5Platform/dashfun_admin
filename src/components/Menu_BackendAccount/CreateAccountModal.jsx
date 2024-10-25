@@ -4,6 +4,8 @@ import { useState } from "react";
 import Constants from "../../modules/constants";
 import API, { requestWithAuthHeader } from "../../modules/api";
 import DataCenter from "../../modules/DataCenter";
+import JSEvent from "../../utils/JSEvent";
+import Events from "../../modules/Events";
 
 const { Authority } = Constants;
 
@@ -73,6 +75,14 @@ export default function CreateAccountModal() {
         auth: 1,
       });
       console.log("res", res);
+      const { code, data, msg } = res.data;
+      if (code == 0) {
+        setFeedback({ type: "success", msg: "User created successfully" });
+        form.resetFields();
+        JSEvent.emit(Events.AccountTable_Update);
+      } else {
+        setFeedback({ type: "error", msg });
+      }
     } catch (e) {
       const { data } = e.response;
       const msg = data.msg;
@@ -80,14 +90,6 @@ export default function CreateAccountModal() {
       console.log("Failed:", e);
     }
     setLoading(false);
-    // setLoading(true);
-    // try {
-    //   const values = await form.validateFields();
-    //   console.log("values", values);
-    // } catch (e) {
-    //   console.log("Failed:", e);
-    // }
-    // setLoading(false);
   };
 
   const handleCancel = () => {
@@ -99,7 +101,7 @@ export default function CreateAccountModal() {
   };
 
   return (
-    <div>
+    <>
       <Button
         type="primary"
         onClick={openModal}
@@ -157,6 +159,6 @@ export default function CreateAccountModal() {
           )}
         </Form>
       </Modal>
-    </div>
+    </>
   );
 }

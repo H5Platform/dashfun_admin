@@ -14,6 +14,15 @@ const saveAuthInfo = (data, username = "admin") => {
   saveToLocalStorage(id, token, username);
 };
 
+const saveQuickLoginAuthInfo = () => {
+  const { token, id, username } = getFromLocalStorage();
+  // setAuthHeader(id, token);
+  DataCenter.isLoggedIn = true;
+  DataCenter.userInfo.token = token;
+  DataCenter.userInfo.username = username;
+  DataCenter.userInfo.userId = id;
+};
+
 const setAuthHeader = (id, token) => {
   // console.log("data", data);
   console.log("set auth header", id, token);
@@ -68,6 +77,7 @@ const logoutHandler = () => {
 export {
   setAuthHeader,
   saveAuthInfo,
+  saveQuickLoginAuthInfo,
   validateToken,
   getFromLocalStorage,
   logoutHandler,

@@ -5,6 +5,7 @@ import API, { requestWithAuthHeader } from "../modules/api";
 import {
   getFromLocalStorage,
   saveAuthInfo,
+  saveQuickLoginAuthInfo,
   setAuthHeader,
   validateToken,
 } from "../utils/authHandler";
@@ -53,8 +54,8 @@ const LoginModal = () => {
         console.log("login check res", code, data);
         if (code == 0) {
           console.log("login check result: ", msg);
-          //   saveAuthInfo(data, username);
-          DataCenter.isLoggedIn = true;
+          // saveAuthInfo(data, username);
+          saveQuickLoginAuthInfo();
           JSEvent.emit(Events.Account.Login);
         } else {
           setModalOpen(true);

@@ -28,7 +28,7 @@ const StatusCheckBoxGroup = () => (
   </Form.Item>
 );
 
-export default function StatusChangeModal({ record }) {
+export default function StatusChangeModal({ record, messageApi }) {
   const [form] = Form.useForm();
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -53,18 +53,22 @@ export default function StatusChangeModal({ record }) {
       console.log("res", code, data, msg);
       if (code == 0) {
         console.log("success");
+        setOpen(false);
+        messageApi.success("Status changed successfully");
         JSEvent.emit(Events.AccountTable_Update);
       } else {
         console.log("error", msg);
+        messageApi.error(msg);
       }
     } catch (e) {
       console.log("error", e);
+      messageApi.error("Status change failed");
     }
     setLoading(false);
   };
 
   return (
-    <div>
+    <>
       <Button key={2} onClick={handleOpen}>
         Change Status
       </Button>
@@ -102,6 +106,6 @@ export default function StatusChangeModal({ record }) {
           </Form.Item>
         </Form>
       </Modal>
-    </div>
+    </>
   );
 }

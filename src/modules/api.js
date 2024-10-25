@@ -25,6 +25,8 @@ const API = {
   resetPassword: serverUrl + "/api/v1/admin/user/reset_password",
   updateUserInfo: serverUrl + "/api/v1/admin/user/update_base_info",
   updateUserStatus: serverUrl + "/api/v1/admin/user/update_status",
+
+  activateUser: serverUrl + "/api/v1/admin/user/active",
 };
 
 export default API;

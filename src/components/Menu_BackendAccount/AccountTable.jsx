@@ -2,6 +2,7 @@ import {
   Button,
   Form,
   Input,
+  message,
   Popconfirm,
   Space,
   Table,
@@ -16,6 +17,8 @@ import JSEvent from "../../utils/JSEvent";
 import Events from "../../modules/Events";
 import AuthChangeModal from "./AuthChangeModal";
 import StatusChangeModal from "./StatusChangeModal";
+import AccountFilter from "./AccountFilter";
+import ResetPasswordButton from "./ResetPasswordButton";
 
 const { UserStatus, Authority } = Constants;
 
@@ -50,22 +53,20 @@ export default function AccountTable() {
 
   const [loading, setLoading] = useState(false);
 
-  const [resetPwdLoading, setResetPwdLoading] = useState(false);
-
   const [data, setData] = useState([]);
 
+  const [messageApi, contextHolder] = message.useMessage();
+
   useEffect(() => {
-    const getUserData = async () => {
+    const getUserData = async (filter = {}) => {
       console.log("isloggedin", DataCenter.isLoggedIn);
       if (!DataCenter.isLoggedIn) return;
       setLoading(true);
       try {
         const res = await requestWithAuthHeader.post(API.userSearch, {
+          ...filter,
           page: currentPage,
           size: pageSize,
-          name: "",
-          email: "",
-          status: 0,
         });
 
         const { code, data, msg } = res.data;
@@ -85,50 +86,14 @@ export default function AccountTable() {
 
     JSEvent.on(Events.Account.Login, getUserData);
     JSEvent.on(Events.AccountTable_Update, getUserData);
+    JSEvent.on(Events.AccountTable_Update, getUserData);
 
     return () => {
       JSEvent.remove(Events.Account.Login, getUserData);
       JSEvent.remove(Events.AccountTable_Update, getUserData);
+      JSEvent.remove(Events.AccountTable_Update, getUserData);
     };
   }, [currentPage]);
-
-  const resetPasswordHandler = async (user_id) => {
-    setResetPwdLoading(true);
-    try {
-      const res = await requestWithAuthHeader.post(API.resetPassword, {
-        user_id,
-      });
-      const { code, data, msg } = res.data;
-      console.log("res", code, data, msg);
-      if (code == 0) {
-        console.log("success");
-        JSEvent.emit(Events.GameTable_Update);
-      } else {
-        console.log("error", msg);
-      }
-    } catch (e) {
-      console.log("error", e);
-    }
-    setResetPwdLoading(false);
-  };
-
-  const updateUserStatusHandler = async (user_id, status) => {
-    try {
-      const res = await requestWithAuthHeader.post(API.updateUserStatus, {
-        user_id,
-        status,
-      });
-      const { code, data, msg } = res.data;
-      console.log("res", code, data, msg);
-      if (code == 0) {
-        console.log("success");
-      } else {
-        console.log("error", msg);
-      }
-    } catch (e) {
-      console.log("error", e);
-    }
-  };
 
   const columns = [
     {
@@ -178,32 +143,23 @@ export default function AccountTable() {
 
         let btns = [];
 
-        switch (record.status) {
-          case UserStatus.Normal:
-            // onClick = {() => resetAccountPassword(record)}
-            btns.push(<AuthChangeModal record={record} />);
-            btns.push(<StatusChangeModal record={record} />);
-            btns.push(
-              <Popconfirm
-                key={3}
-                title={
-                  <div>
-                    Are you sure to reset password for user
-                    <span className="font-semibold"> {record.name}</span>?
-                    <br />
-                    user will not be able to login until the account has been
-                    reactivated.
-                  </div>
-                }
-                okText="Yes"
-                cancelText="cancel"
-                onConfirm={() => resetPasswordHandler(record.id)}
-              >
-                <Button loading={resetPwdLoading}>Reset Password</Button>
-              </Popconfirm>
-            );
-            break;
-          /*
+        // switch (record.status) {
+        //   case UserStatus.Normal:
+        btns.push(
+          <AuthChangeModal record={record} key={1} messageApi={messageApi} />
+        );
+        btns.push(
+          <StatusChangeModal record={record} key={2} messageApi={messageApi} />
+        );
+        btns.push(
+          <ResetPasswordButton
+            record={record}
+            key={3}
+            messageApi={messageApi}
+          />
+        );
+        // break;
+        /*
             btns.push(
               <Button
                 key={2}
@@ -239,9 +195,9 @@ export default function AccountTable() {
             );
             break;
             */
-          default:
-            break;
-        }
+        //   default:
+        //     break;
+        // }
 
         return (
           <Space size="middle">
@@ -254,6 +210,8 @@ export default function AccountTable() {
 
   return (
     <Form form={form} component={false}>
+      {contextHolder}
+      <AccountFilter />
       <Table
         loading={loading}
         form={form}

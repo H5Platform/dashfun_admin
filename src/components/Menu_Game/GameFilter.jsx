@@ -1,17 +1,21 @@
 import { useState } from "react";
-import { Button, Select, Space, Input } from "antd";
+import { Button, Select, Space, Input, Checkbox } from "antd";
 import Constants from "../../modules/constants";
 import JSEvent from "../../utils/JSEvent";
 import Events from "../../modules/Events";
+import PropTypes from "prop-types";
 
 const { GameStatus } = Constants;
 
 const { Search } = Input;
 
-export default function GameFilter() {
+
+
+export default function GameFilter({ onFilterUpdated }) {
   const [keyword, setKeyword] = useState("");
   const [genre, setGenre] = useState([]);
   const [status, setStatus] = useState(undefined);
+  const [flags, setFlags] = useState([])
 
   const onChangeKeyword = (e) => {
     setKeyword(e.target.value);
@@ -26,8 +30,10 @@ export default function GameFilter() {
       keyword,
       genre,
       status,
+      flag: flags
     };
-    JSEvent.emit(Events.GameTable_Update, filter);
+    if (onFilterUpdated)
+      onFilterUpdated(filter)
   };
 
   // const onResetFilter = () => {
@@ -37,12 +43,12 @@ export default function GameFilter() {
   // };
 
   return (
-    <div className="mb-3">
+    <div className="mb-3 flex flex-row items-center gap-2">
       <Search
         placeholder="Search by keyword"
         value={keyword}
         onChange={onChangeKeyword}
-        className="my-3 w-[400px] block"
+        className="w-[400px] block"
       />
       {/* <Select
         mode="multiple"
@@ -57,15 +63,46 @@ export default function GameFilter() {
         <Select.Option value="Strategy">Strategy</Select.Option>
       </Select> */}
       <Select
+        className="min-w-32"
         placeholder="Select status"
         value={status}
         onChange={onStausChange}
-        className="mb-3"
         options={Object.entries(GameStatus).map(([key, value]) => ({
           label: key,
           value,
         }))}
       />
+      <div className="flex flex-col items-center bg-gray-100 rounded-md p-2">
+        <span className="font-bold">Game Flags</span>
+        <Checkbox.Group
+          onChange={(values) => {
+            const f = [];
+            for (const v in values) {
+              switch (values[v]) {
+                case "new":
+                  f.push(1);
+                  break;
+                case "popular":
+                  f.push(2);
+                  break;
+                case "suggest":
+                  f.push(3);
+                  break;
+                case "promote":
+                  f.push(4);
+                  break;
+              }
+            }
+            setFlags(f);
+          }}
+          options={[
+            { label: "New", value: "new" },
+            { label: "Popular", value: "popular" },
+            { label: "Suggest", value: "suggest" },
+            { label: "Promote", value: "promote" },
+          ]}>
+        </Checkbox.Group>
+      </div>
       <Space>
         <Button color="primary" variant="link" onClick={onApplyFilter}>
           Apply Filter
@@ -77,3 +114,7 @@ export default function GameFilter() {
     </div>
   );
 }
+
+GameFilter.propTypes = {
+  onFilterUpdated: PropTypes.func.isRequired,
+};

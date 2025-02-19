@@ -20,7 +20,6 @@ export default function ImageUploadModal({ data, disabled }) {
     disabled: PropTypes.bool,
   };
 
-  // console.log("data", data);
   const [previewOpen, setPreviewOpen] = useState(false);
   const [previewImage, setPreviewImage] = useState("");
   const [fileList, setFileList] = useState({});
@@ -28,26 +27,26 @@ export default function ImageUploadModal({ data, disabled }) {
 
   const iconImage = data.iconUrl
     ? {
-        uid: 1,
-        name: "icon.png",
-        url: getImageUrl(data.id, data.iconUrl),
-      }
+      uid: 1,
+      name: "icon.png",
+      url: getImageUrl(data.id, data.iconUrl),
+    }
     : null;
 
   const logoImage = data.logoUrl
     ? {
-        uid: 2,
-        name: "logo.png",
-        url: getImageUrl(data.id, data.logoUrl),
-      }
+      uid: 2,
+      name: "logo.png",
+      url: getImageUrl(data.id, data.logoUrl),
+    }
     : null;
 
-  const mainImage = data.mainImageUrl
+  const mainImage = data.mainPicUrl
     ? {
-        uid: 3,
-        name: "main.png",
-        url: getImageUrl(data.id, data.mainImageUrl),
-      }
+      uid: 3,
+      name: "main.png",
+      url: getImageUrl(data.id, data.mainPicUrl),
+    }
     : null;
 
   const [open, setOpen] = useState(false);

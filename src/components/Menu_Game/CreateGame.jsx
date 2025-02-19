@@ -41,6 +41,7 @@ export default function CreateGame() {
         setFeedback({ type: "error", msg });
       }
     } catch (e) {
+      console.log(e);
       const errorMsg = e.response.data.msg;
       setFeedback({ type: "error", msg: errorMsg });
       console.log(errorMsg);

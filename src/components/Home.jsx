@@ -1,38 +1,30 @@
-import { Layout, theme } from "antd";
-import SideMenu from "./SideMenu";
-import BackendAccounts from "./Menu_BackendAccount/BackendAccounts";
+import { Layout, notification, theme } from "antd";
+import SideMenu, { getMenuItem } from "./SideMenu";
 import Constants from "../modules/constants";
 import { useCallback, useEffect, useState } from "react";
 import LoginModal from "./LoginModal";
-import GameTable from "./Menu_Game/GameTable";
 import JSEvent from "../utils/JSEvent";
 import Events from "../modules/Events";
+import PageRoutes from "./PageRoutes";
+import { useNavigate } from "react-router";
 
 const { Content } = Layout;
 
 const { MenuItems } = Constants;
 
 const Home = () => {
+  const nav = useNavigate();
+  const [api, contextHolder] = notification.useNotification();
+
   const {
     token: { colorBgContainer, borderRadiusLG },
   } = theme.useToken();
 
-  // const [selectedMenu, setSelectedMenu] = useState(MenuItems.BackendAccounts);
-  const [currentContent, setCurrentContent] = useState(<BackendAccounts />);
-
   const onSelectMenu = useCallback((item) => {
     console.log("onSelectMenu", item);
-    switch (item.key) {
-      case MenuItems.BackendAccounts:
-        setCurrentContent(<BackendAccounts />);
-        break;
-      case MenuItems.Game:
-        setCurrentContent(<GameTable />);
-        break;
-      default:
-        setCurrentContent(null);
-        break;
-    }
+    const mi = getMenuItem(item.key);
+    nav(mi.path);
+
   }, []);
 
   useEffect(() => {
@@ -48,12 +40,8 @@ const Home = () => {
   }, []);
 
   return (
-    <Layout
-      style={{
-        minHeight: "100vh",
-        width: "100vw",
-      }}
-    >
+    <Layout className="w-screen h-screen">
+      {contextHolder}
       <LoginModal />
       <SideMenu onSelectMenu={onSelectMenu} />
       <Layout>
@@ -69,15 +57,8 @@ const Home = () => {
             margin: "16px",
           }}
         >
-          {/* <Breadcrumb
-            style={{
-              margin: "16px 0",
-            }}
-          >
-            <Breadcrumb.Item>User</Breadcrumb.Item>
-            <Breadcrumb.Item>Bill</Breadcrumb.Item>
-          </Breadcrumb> */}
           <div
+          className="h-full"
             style={{
               padding: 24,
               minHeight: 360,
@@ -85,7 +66,7 @@ const Home = () => {
               borderRadius: borderRadiusLG,
             }}
           >
-            {currentContent}
+            <PageRoutes />
           </div>
         </Content>
         {/* <Footer>

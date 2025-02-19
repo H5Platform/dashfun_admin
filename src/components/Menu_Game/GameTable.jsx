@@ -66,6 +66,7 @@ export default function GameTable() {
         const { code, data, msg } = res.data;
         if (code === 0) {
           setGameData(data.data);
+          console.log("game data", data);
         } else {
           console.log("error", msg);
         }
@@ -85,7 +86,7 @@ export default function GameTable() {
   }, [currentPage]);
 
   const onEditing = (val, dataIndex) => {
-    // setEditingData((pre) => ({ ...pre, [e.target.name]: e.target.value }));
+    setEditingData((pre) => ({ ...pre, [dataIndex]: val }));
     console.log("e", val, dataIndex);
   };
 
@@ -118,9 +119,9 @@ export default function GameTable() {
   }) => {
     // console.log("record", record);
     let inputNode = <Input />;
-    if (["name", "description", "genre", "url"].includes(dataIndex)) {
+    if (["name", "desc", "genre", "url"].includes(dataIndex)) {
       inputNode = (
-        <Input onChange={(e) => onEditing(e.target.value, dataIndex)} />
+        <Input onBlur={(e) => { onEditing(e.target.value, dataIndex) }} /*onChange={(e) => onEditing(e.target.value, dataIndex)}*/ />
       );
     }
 
@@ -192,6 +193,12 @@ export default function GameTable() {
 
   const columns = [
     {
+      title: "id",
+      dataIndex: "id",
+      key: "id",
+      editable: false,
+    },
+    {
       title: "Name",
       dataIndex: "name",
       key: "name",
@@ -199,8 +206,9 @@ export default function GameTable() {
     },
     {
       title: "Description",
-      dataIndex: "description",
-      key: "description",
+      dataIndex: "desc",
+      width: "30%",
+      key: "desc",
       editable: true,
     },
     {
@@ -217,6 +225,7 @@ export default function GameTable() {
             <Select
               defaultValue={status}
               onChange={(value) => {
+                console.log("onchange", value)
                 const newData = [...gameData];
                 const index = newData.findIndex(
                   (item) => record.id === item.id
@@ -230,7 +239,7 @@ export default function GameTable() {
             >
               <Select.Option value={GameStatus.Online}>Online</Select.Option>
               <Select.Option value={GameStatus.Removed}>Removed</Select.Option>
-              <Select.Option value={GameStatus.Pending}>Pending</Select.Option>
+              <Select.Option value={GameStatus.Pending}>Testing</Select.Option>
               <Select.Option value={GameStatus.Normal}>Normal</Select.Option>
             </Select>
           );
@@ -240,10 +249,8 @@ export default function GameTable() {
           } else if (status === GameStatus.Removed) {
             return <Tag color="red">Removed</Tag>;
           } else if (status === GameStatus.Pending) {
-            return <Tag color="blue">Pending</Tag>;
-          } else {
-            return <Tag color="orange">Normal</Tag>;
-          }
+            return <Tag color="blue">Testing</Tag>;
+          } 
         }
       },
     },
